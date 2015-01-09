@@ -1,0 +1,24 @@
+{
+  "appID": "3c0e13e6eb494faea5805ccadf8547fc",
+  "dependencies": {
+    "devkit-core": "https://github.com/gameclosure/devkit-core#v2.0.18",
+    "devkit-chartboost": "https://github.com/gameclosure/chartboost#v2.0.0"
+  },
+  "title": "demoChartboost",
+  "shortName": "demoChartboost",
+  "studio": {
+    "domain": "gameclosure.com",
+    "name": "GameClosure"
+  },
+  "supportedOrientations": [
+    "portrait"
+  ],
+  "android": {
+    "chartboostAppID": "54af12a204b0167deeed357e",
+    "chartboostAppSignature": "1912f618beb0fef86a822a1ada7c91aa6f79874a"
+  },
+  "ios": {
+    "chartboostAppID": "54af120004b0167e2ecc5d1d",
+    "chartboostAppSignature": "a5c92c79b06c01f4fec253e335fc7e36cc7537e5"
+  }
+}
