@@ -2,7 +2,7 @@
   "appID": "3c0e13e6eb494faea5805ccadf8547fc",
   "dependencies": {
     "devkit-core": "https://github.com/gameclosure/devkit-core#v2.0.18",
-    "devkit-chartboost": "https://github.com/gameclosure/chartboost#v2.0.0"
+    "devkit-chartboost": "https://github.com/gameclosure/chartboost#v2.1.0"
   },
   "title": "demoChartboost",
   "shortName": "demoChartboost",
