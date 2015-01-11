@@ -26,16 +26,22 @@ exports = Class(GC.Application, function () {
 
     var buttonPadding = 20;
     var buttonWidth = (this.view.style.width - (buttonPadding * 2));
-    var buttonWidth2 = (this.view.style.width - (buttonPadding * 5)) / 2;
-    var buttonHeight = 100;
-    var buttonY = this.header.style.y + this.header.style.height + 100;
+    var buttonWidth2 = (this.view.style.width - (buttonPadding * 3)) / 2;
+    var buttonWidth3 = (this.view.style.width - (buttonPadding * 4)) / 3;
+    var buttonStart31 = buttonPadding;
+    var buttonStart32 = buttonPadding + buttonWidth3 + buttonPadding;
+    var buttonStart33 = (buttonPadding * 3) + (buttonWidth3 * 2);
+    var buttonHeight = 75;
+
+
 
     // show interstitial button
+    var buttonY = this.header.style.y + this.header.style.height + 100;
     this.showInterstitialButton = new ButtonView({
       superview: this.view,
-      x: buttonPadding,
+      x: buttonStart31,
       y: buttonY,
-      width: buttonWidth,
+      width: buttonWidth3,
       height: buttonHeight,
       title: "Show Interstitial",
       onClick: bind(this, this.showInterstitial)
@@ -44,9 +50,9 @@ exports = Class(GC.Application, function () {
     // cache interstitial
     this.cacheInterstitialButton = new ButtonView({
       superview: this.view,
-      x: buttonPadding,
-      y: this.showInterstitialButton.style.y + buttonHeight + 100,
-      width: buttonWidth,
+      x: buttonStart32,
+      y: buttonY,
+      width: buttonWidth3,
       height: buttonHeight,
       title: "Cache Interstitial",
       onClick: bind(this, this.cacheInterstitial)
@@ -55,9 +61,9 @@ exports = Class(GC.Application, function () {
     // show interstitial if available
     this.showInterstitialIfAvailableButton = new ButtonView({
       superview: this.view,
-      x: buttonPadding,
-      y: this.cacheInterstitialButton.style.y + buttonHeight + 100,
-      width: buttonWidth,
+      x: buttonStart33,
+      y: buttonY,
+      width: buttonWidth3,
       height: buttonHeight,
       title: "Show only if available",
       onClick: bind(this, function () {
@@ -65,8 +71,78 @@ exports = Class(GC.Application, function () {
       })
     });
 
-    var logViewY = this.showInterstitialIfAvailableButton.style.y +
-      buttonHeight + 150;
+    buttonY += buttonHeight + buttonPadding;
+    this.showMoreAppsButton = new ButtonView({
+      superview: this.view,
+      x: buttonStart31,
+      y: buttonY,
+      width: buttonWidth3,
+      height: buttonHeight,
+      title: "Show More Apps",
+      onClick: bind(this, this.showMoreApps)
+    });
+
+    // cache more apps
+    this.cacheMoreAppsButton = new ButtonView({
+      superview: this.view,
+      x: buttonStart32,
+      y: buttonY,
+      width: buttonWidth3,
+      height: buttonHeight,
+      title: "Cache More Apps",
+      onClick: bind(this, this.cacheMoreApps)
+    });
+
+    // show more apps if available
+    this.showMoreAppsIfAvailableButton = new ButtonView({
+      superview: this.view,
+      x: buttonStart33,
+      y: buttonY,
+      width: buttonWidth3,
+      height: buttonHeight,
+      title: "Show only if available",
+      onClick: bind(this, function () {
+        this.showMoreApps(true);
+      })
+    });
+
+
+    buttonY += buttonHeight + buttonPadding;
+    this.showRewardedVideoButton = new ButtonView({
+      superview: this.view,
+      x: buttonStart31,
+      y: buttonY,
+      width: buttonWidth3,
+      height: buttonHeight,
+      title: "Show Rewarded Video",
+      onClick: bind(this, this.showRewardedVideo)
+    });
+
+    // cache rewarded video
+    this.cacheRewardedVideoButton = new ButtonView({
+      superview: this.view,
+      x: buttonStart32,
+      y: buttonY,
+      width: buttonWidth3,
+      height: buttonHeight,
+      title: "Cache Rewarded Video",
+      onClick: bind(this, this.cacheRewardedVideo)
+    });
+
+    // show rewarded video if available
+    this.showRewardedVideoIfAvailableButton = new ButtonView({
+      superview: this.view,
+      x: buttonStart33,
+      y: buttonY,
+      width: buttonWidth3,
+      height: buttonHeight,
+      title: "Show only if available",
+      onClick: bind(this, function () {
+        this.showRewardedVideo(true);
+      })
+    });
+
+    var logViewY = buttonY + buttonHeight + 150;
     this.logView = new LogView({
       superview: this.view,
       x: 0,
@@ -80,28 +156,40 @@ exports = Class(GC.Application, function () {
   };
 
   this._createEventListeners = function () {
-    chartboost.on('AdAvailable', bind(this, function () {
-      this.log("Ad cached and is available to view");
-    }));
+    var events = {
+      'AdAvailable': 'Ad cached and is available to view',
+      'AdFailedToLoad': 'Ad failed to load',
+      'AdDisplayed': 'Ad displayed to user',
+      'AdDismissed': 'Ad dismissed (clicked or closed)',
+      'AdClicked': 'Ad clicked!',
+      'AdClosed': 'Ad closed (not clicked)',
 
-    chartboost.on('AdFailedToLoad', bind(this, function () {
-      this.log("Ad failed to load");
-    }));
+      'MoreAppsAvailable': 'More Apps cached and available to view',
+      'MoreAppsFailedToLoad': 'More Apps failed to load',
+      'MoreAppsDisplayed': 'More Apps displayed to user',
+      'MoreAppsDismissed': 'More Apps dismissed (clicked or closed)',
+      'MoreAppsClicked': 'More Apps clicked!',
+      'MoreAppsClosed': 'More Apps closed (not clicked)',
 
-    chartboost.on('AdDisplayed', bind(this, function () {
-      this.log("Ad displayed to user");
-    }));
+      'RewardedVideoAvailable': 'Rewarded Video cached and available to view',
+      'RewardedVideoFailedToLoad': 'Rewarded Video failed to load',
+      'RewardedVideoDisplayed': 'Rewarded Video displayed to user',
+      'RewardedVideoDismissed': 'Rewarded Video dismissed (clicked or closed)',
+      'RewardedVideoClicked': 'Rewarded Video clicked!',
+      'RewardedVideoClosed': 'Rewarded Video closed (not clicked)',
+      //'RewardedVideoCompleted': 'Rewarded Video completed' // special cased
+    };
+    var eventNames = Object.keys(events);
+    var boundLog = bind(this, this.log);
+    for (var i = 0; i < eventNames.length; i++) {
+      var eventName = eventNames[i];
+      chartboost.on(eventName, bind(this, function (eventDetails) {
+        this.log(eventDetails)
+      }, events[eventName]));
+    }
 
-    chartboost.on('AdDismissed', bind(this, function () {
-      this.log("Ad dismissed (clicked or closed)");
-    }));
-
-    chartboost.on('AdClicked', bind(this, function () {
-      this.log("Ad clicked!");
-    }));
-
-    chartboost.on('AdClosed', bind(this, function () {
-      this.log("Ad closed (not clicked)");
+    chartboost.on('RewardedVideoCompleted', bind(this, function (reward) {
+      this.log("rewarded video completed! reward:" + reward);
     }));
   };
 
@@ -118,6 +206,38 @@ exports = Class(GC.Application, function () {
   this.cacheInterstitial = function () {
     this.log("Caching chartboost interstitial");
     chartboost.cacheInterstitial();
+  };
+
+
+  this.showMoreApps = function (onlyIfAvailable) {
+    if (onlyIfAvailable) {
+      this.log("Showing chartboost more apps (if available)");
+      chartboost.showMoreAppsIfAvailable();
+    } else {
+      this.log("Showing chartboost more apps");
+      chartboost.showMoreApps();
+    }
+  };
+
+  this.cacheMoreApps = function () {
+    this.log("Caching chartboost more apps");
+    chartboost.cacheMoreApps();
+  };
+
+
+  this.showRewardedVideo = function (onlyIfAvailable) {
+    if (onlyIfAvailable) {
+      this.log("Showing chartboost rewarded video (if available)");
+      chartboost.showRewardedVideoIfAvailable();
+    } else {
+      this.log("Showing chartboost rewarded video");
+      chartboost.showRewardedVideo();
+    }
+  };
+
+  this.cacheRewardedVideo = function () {
+    this.log("Caching chartboost rewarded video");
+    chartboost.cacheRewardedVideo();
   };
 
 
